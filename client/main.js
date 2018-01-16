@@ -14,7 +14,7 @@ const routes = (
       <Switch>
         <Route exact path="/" component={Login}/>
         <Route exact path="/signup" component={Signup}/>
-        <Route exact path="/link" component={Link}/>
+        <Route exact path="/links" component={Link}/>
         <Route component={NotFound}/>
       </Switch>
     </div>

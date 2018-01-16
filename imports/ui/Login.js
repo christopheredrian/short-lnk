@@ -1,9 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default class Login extends React.Component{
   render(){
     return(
-      <p>Login component here...</p>
+      <div>
+        <h1>Login to Short Lnk</h1>
+        ..login form here
+        <Link to="/signup">Don't have an account?</Link>
+      </div>
     );
   }
 }
