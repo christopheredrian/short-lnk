@@ -1,7 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, BrowserRouter, Switch } from 'react-router-dom';
+import {
+  Route,
+  BrowserRouter,
+  Switch,
+  Redirect } from 'react-router-dom';
 import { Tracker } from 'meteor/tracker';
 import createBrowserHistory from 'history/createBrowserHistory'
 
@@ -12,16 +16,28 @@ import Link from '../imports/ui/Link';
 import Login from '../imports/ui/Login';
 import NotFound from '../imports/ui/NotFound';
 
-const unauthenticatedPages = ['/', 'signup'];
+const unauthenticatedPages = ['/', '/signup'];
 const authenticatedPages = ['/links'];
 
+const PrivateRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={props => (
+    !!Meteor.userId() ? (
+      <Component {...props}/>
+    ) : (
+      <Redirect to={{
+        pathname: '/',
+        state: { from: props.location }
+      }}/>
+    )
+  )}/>
+)
 const routes = (
   <BrowserRouter>
     <div>
       <Switch>
-        <Route exact path="/" component={Login}/>
-        <Route exact path="/signup" component={Signup}/>
-        <Route exact path="/links" component={Link}/>
+        <Route exact path="/" component={Login} />
+        <Route exact path="/signup" component={Signup} />
+        <PrivateRoute  path="/links" component={Link}/>
         <Route component={NotFound}/>
       </Switch>
     </div>
@@ -41,10 +57,11 @@ Tracker.autorun(() => {
   console.log("pathname",pathname);
   console.log(history);
   if(isUnauthenticatedPage && isAuthenticated){
-    history.push('/links');
-  }
-  if (isAuthenticatedPage && !isAuthenticated) {
-    history.push('/');
+    // history.replace('/links'); // Not Working
+    window.location.href="/links";
+  } else if (isAuthenticatedPage && !isAuthenticated) {
+    // history.replace('/'); // Not working
+    window.location.href="/";
   }
 
 });
